@@ -1,0 +1,88 @@
+server:
+  port: 8888
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: springboot-demo
+
+  # 数据源配置
+  datasource:
+    # H2数据库配置（开发环境）
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+    
+    # MySQL数据库配置（生产环境）
+    # url: jdbc:mysql://localhost:3306/springboot_demo?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    # driver-class-name: com.mysql.cj.jdbc.Driver
+    # username: root
+    # password: password
+
+  # JPA配置
+  jpa:
+    hibernate:
+      ddl-auto: create-drop  # 开发环境使用，生产环境改为validate
+    show-sql: true
+    format-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        # dialect: org.hibernate.dialect.MySQL8Dialect  # MySQL使用这个
+    open-in-view: false
+
+  # H2控制台配置（仅开发环境）
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # WebSocket配置
+  websocket:
+    message-size-limit: 1048576  # 1MB
+    send-buffer-size-limit: 1048576  # 1MB
+    send-time-limit: 20000  # 20秒
+
+  # 开发工具配置
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+
+# 日志配置
+logging:
+  level:
+    com.example.demo: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/application.log
+
+# 管理端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# 讯飞语音识别配置
+xfyun:
+  iat:
+    app-id: 96c077b7
+    api-key: 8cf73945dd152d12c504928d26cf529e
+    api-secret: NTY1NDg5MzZmYTE3MGU5YzBmMTZkYjMw
+    host-url: https://iat-api.xfyun.cn/v2/iat
+    # 关闭模拟模式，使用真实的讯飞API
+    mock-mode: false
+
+  #麦克风采集 -> 音频分帧 -> 编码 -> WebSocket发送 -> 讯飞处理 -> 结果返回 -> 前端展示
